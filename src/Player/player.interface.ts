@@ -1,14 +1,19 @@
+export enum playerposition{
+    Gk = 'Gk',
+    Df = 'Df',
+    Mf = 'Mf',
+    St = 'St'
+}
+
 export interface Iplayer{
     
-    firstName: String,
-    lastName: String,
-    playerId:Number,
-    playerNation:String,
-    playerHeight:Number,
-    defaultShirtNumber:Number,
-    currentShirtNumber:Number,
-    playerPosition:String
-
-
+    firstName: string,
+    lastName: string,
+    playerId:number,
+    playerNation:string,
+    playerHeight:number,
+    defaultShirtNumber:number,
+    currentShirtNumber:number,
+    playerposition:playerposition
 }
 

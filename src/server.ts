@@ -1,17 +1,22 @@
 import * as config from './config';
 import express from 'express';
-import { Application } from 'express';
-import routers from './router';
+import playerRouter from './Player/player.router';
+import teamRouter from './Team/team.router'
 
 const PORT = config.serverPort;
-export const app: Application = express();
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/player', playerRouter);
+
+app.use('/team', teamRouter);
 
 function server() {
-    routers(app);
-
-    app.listen(PORT, () => {
-        console.log(`listening at http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`listening at http://localhost:${PORT}`);
+  });
 }
 
 export default server;
