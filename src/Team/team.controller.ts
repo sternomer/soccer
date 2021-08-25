@@ -16,6 +16,7 @@ export const postteam = async (req: Request, res: Response) => {
   let allnumbers: number[] = [];
   let myid: Iplayer[] = [];
   console.log(teamPlayer.length);
+  
 
   if (teamPlayer.length > 25) {
     throw 'the team can only have 25 players';
@@ -88,13 +89,23 @@ export const addPlayer = async (req: Request, res: Response) => {
   // let checkDuplicate =(array) =>new Set(array).size !== array.lenght;
   const currentPlayerid: number = req.body.playerlist;
   const currentPlayer: Iplayer = await PlayerSchema.findOne({ playerId: currentPlayerid });
-  console.log(myId[0]);
-  console.log(playerId);
+ console.log(myId[0].includes(playerId[0]));
+ console.log(myId[0]);
+ console.log(playerId);
+ 
+ 
+ 
+
 
   if (myId.length > 25) {
     throw 'the team can only have 25 players';
-  } else if (myId[0].includes(playerId)) {
-    throw 'the id allready exist';
+  }
+  for(let i = 0;i<=playerId.length;i++){
+    if(myId[0].includes(playerId[i])) {
+      res.send('the id allready exist')
+      throw 'the id allready exist';
+  }
+   
   }
 
   try {
