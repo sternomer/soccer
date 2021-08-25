@@ -1,4 +1,3 @@
-
 export  interface ITeam{
     teamName:String,
     teamNation:String,

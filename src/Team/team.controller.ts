@@ -2,7 +2,12 @@ import { Request, Response } from 'express';
 import { ITeam } from './team.Interface';
 // import  * as  playerManager from './player.manager';
 import teamSchema from './team.model';
-import { getCurrentPlayerNumberInManager, getPlayersNumberInTeamManger, updatePlayerNumber } from './team.manager';
+import {
+  getCurrentPlayerNumberInManager,
+  getIds,
+  getPlayersNumberInTeamManger,
+  updatePlayerNumber,
+} from './team.manager';
 import PlayerSchema from '../Player/player.model';
 import { Iplayer } from '../Player/player.interface';
 
@@ -10,6 +15,12 @@ export const postteam = async (req: Request, res: Response) => {
   const teamPlayer: number[] = req.body.playerlist;
   let allnumbers: number[] = [];
   let myid: Iplayer[] = [];
+  console.log(teamPlayer.length);
+  
+
+  if (teamPlayer.length > 25) {
+    throw 'the team can only have 25 players';
+  }
 
   for (let i: number = 0; i < teamPlayer.length; i++) {
     myid.push(await PlayerSchema.findOne({ playerId: teamPlayer[i] }));
@@ -20,6 +31,8 @@ export const postteam = async (req: Request, res: Response) => {
     const element = myid[i];
     allnumbers = [];
     myid.forEach((p) => allnumbers.push(p.currentShirtNumber));
+   
+    
 
     updatePlayerNumber(element.currentShirtNumber, allnumbers, element.playerId);
   }
@@ -67,60 +80,45 @@ export const deleteTeam = async (req: Request, res: Response) => {
 };
 //update
 export const addPlayer = async (req: Request, res: Response) => {
-  console.log(req.body);
   const teamId: string = req.params.teamId;
   const teamInt: number = parseInt(teamId);
-  const playersNumber: number[] = await getPlayersNumberInTeamManger(teamInt);
-  const playerId =req.body.playerlist;
-  const playerNumber = await getCurrentPlayerNumberInManager(playerId);
-  let myid:Iplayer= req.body.playerlist
+  const myId: number[][] = await getIds(teamInt);
+  const objOfplayersNumber: { playersNumber: number[] }[] = await getPlayersNumberInTeamManger(teamInt);
+  const playersnumber: number[] = objOfplayersNumber[0].playersNumber;
+  const playerId = req.body.playerlist;
+  const objplayerNumber = await getCurrentPlayerNumberInManager(playerId);
+  const playerNumber: number = objplayerNumber;
+  // let checkDuplicate =(array) =>new Set(array).size !== array.lenght;
+  const currentPlayerid:number= req.body.playerlist;
+  const currentPlayer:Iplayer = await PlayerSchema.findOne({playerId:currentPlayerid});
+  console.log(myId[0]);
+  console.log(playerId);
 
 
- 
-    try {
-      if (playersNumber.includes(playerNumber)){
-        updatePlayerNumber(myid.currentShirtNumber,playersNumber,playerId);
-        
-      }
-      const updateTeam = await teamSchema.updateOne(
-        {
-          teamId: req.params.teamId,
-        },
-        { $push: { playerlist: req.body.playerlist } },
-      );
-      res.json(updateTeam);
-    } catch (err) {
-      res.json({ message: err });
+  if (myId.length > 25) {
+    throw 'the team can only have 25 players';
+  }
+   else if (myId[0].includes(playerId)) {
+    throw 'the id allready exist';
+  }
+
+  try {
+    if (playersnumber.includes(playerNumber)) {
+      updatePlayerNumber(currentPlayer.currentShirtNumber, playersnumber, playerId);
     }
+    const updateTeam = await teamSchema.updateOne(
+      {
+        teamId: req.params.teamId,
+      },
+      { $push: { playerlist: req.body.playerlist } },
+    );
+
+    res.json(updateTeam);
+  } catch (err) {
+    res.json({ message: err });
+  }
 };
-// export const checkGk = async (_req: Request, _res: Response) => {
-//   try {
-//     const checking = await teamSchema.aggregate([
-//       {
-//         $lookup: {
-//           from: 'players',
-//           localField: 'playerlist',
-//           foreignField: '_id',
-//           as: 'players',
-//         },
-//       },
-//       {
-//         $unwind: {
-//           path: '$players',
-//         },
-//       },
-//       {
-//         $match: {
-//           'players.playerPosition': 'Gk',
-//           'players.playerHeight': {
-//             $gte: 185,
-//           },
-//         },
-//       },
-//       {},
-//     ]);
-//   } catch (error) {}
-// };
+
 export const checkNumberavailable = async (req: Request, res: Response) => {
   const teamId: string = req.params.teamId;
   const teamInt: number = parseInt(teamId);

@@ -1,4 +1,3 @@
-//
 import  { Request, Response } from 'express';
 import { Iplayer } from './player.interface';
 // import  * as  playerManager from './player.manager';
