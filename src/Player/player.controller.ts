@@ -1,4 +1,4 @@
-import  { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { Iplayer } from './player.interface';
 // import  * as  playerManager from './player.manager';
 import PlayerSchema from './player.model';
@@ -6,12 +6,10 @@ import PlayerSchema from './player.model';
 // post a new player//
 export const postPlayer = async (req: Request, res: Response) => {
   try {
-  if (req.body.playerPosition === 'Gk' && req.body.playerHeight < 185 ) {
-    throw 'gk is too short';
-  }
-  
-  
-  
+    if (req.body.playerPosition === 'Gk' && req.body.playerHeight < 185) {
+      throw 'gk is too short';
+    }
+
     const newPlayer = new PlayerSchema({
       firstName: req.body.firstName,
       lastName: req.body.lastName,

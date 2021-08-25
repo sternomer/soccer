@@ -1,4 +1,10 @@
-import { getCurrentPlayerNumberInRepo, getIdofAllPlayersrepo, getPlayersId, getPlayersNumberInTeamRepo, updateNumber } from './team.repository';
+import {
+  getCurrentPlayerNumberInRepo,
+  getIdofAllPlayersrepo,
+  getPlayersId,
+  getPlayersNumberInTeamRepo,
+  updateNumber,
+} from './team.repository';
 
 export async function getPlayersNumberInTeamManger(teamInt: number) {
   const checkNumber = Array.from(await getPlayersNumberInTeamRepo(teamInt));
@@ -14,11 +20,11 @@ export async function getPlayersIdInTeamManger(teamInt: number) {
 
 export async function getIds(teamInt: number) {
   const getId = Array.from(await getPlayersId(teamInt));
-    const playersNumber: number[][] =[];
-    getId.forEach((docs)=>{
-      playersNumber.push(docs.playerlist);
-    })
-    return playersNumber;
+  const playersNumber: number[][] = [];
+  getId.forEach((docs) => {
+    playersNumber.push(docs.playerlist);
+  });
+  return playersNumber;
 }
 
 export async function getCurrentPlayerNumberInManager(playerId: string) {
@@ -56,9 +62,7 @@ export function generateNewNumber(teamPlayers: any[], playerNum: any) {
   return playerNum;
 }
 //check for duplicate//
-export async function getIDManager(teamInt){
-  
-  const myids:number[] = await getIdofAllPlayersrepo(teamInt);
-     return myids;
-     
+export async function getIDManager(teamInt) {
+  const myids: number[] = await getIdofAllPlayersrepo(teamInt);
+  return myids;
 }

@@ -11,10 +11,5 @@ router.put('/:teamId', teamController.addPlayer);
 router.get('/checkNum/:teamId', teamController.checkNumberavailable);
 // router.get('/checkPlayer/:playerlist', teamController.getNumber);
 // router.get('/getNumber/:playerId', teamController.getNumber);
-       
 
-
-
-
-
-export default router;  
+export default router;

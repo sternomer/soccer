@@ -16,7 +16,6 @@ export const postteam = async (req: Request, res: Response) => {
   let allnumbers: number[] = [];
   let myid: Iplayer[] = [];
   console.log(teamPlayer.length);
-  
 
   if (teamPlayer.length > 25) {
     throw 'the team can only have 25 players';
@@ -31,8 +30,6 @@ export const postteam = async (req: Request, res: Response) => {
     const element = myid[i];
     allnumbers = [];
     myid.forEach((p) => allnumbers.push(p.currentShirtNumber));
-   
-    
 
     updatePlayerNumber(element.currentShirtNumber, allnumbers, element.playerId);
   }
@@ -89,16 +86,14 @@ export const addPlayer = async (req: Request, res: Response) => {
   const objplayerNumber = await getCurrentPlayerNumberInManager(playerId);
   const playerNumber: number = objplayerNumber;
   // let checkDuplicate =(array) =>new Set(array).size !== array.lenght;
-  const currentPlayerid:number= req.body.playerlist;
-  const currentPlayer:Iplayer = await PlayerSchema.findOne({playerId:currentPlayerid});
+  const currentPlayerid: number = req.body.playerlist;
+  const currentPlayer: Iplayer = await PlayerSchema.findOne({ playerId: currentPlayerid });
   console.log(myId[0]);
   console.log(playerId);
 
-
   if (myId.length > 25) {
     throw 'the team can only have 25 players';
-  }
-   else if (myId[0].includes(playerId)) {
+  } else if (myId[0].includes(playerId)) {
     throw 'the id allready exist';
   }
 
