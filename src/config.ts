@@ -1,4 +1,4 @@
-export const serverPort = 4001;
+export const serverPort = 4002;
 
 export const dbName = 'soccerteam';
 export const mongoDbPath = `mongodb://localhost:27017/${dbName}`;
