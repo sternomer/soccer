@@ -15,10 +15,14 @@ export const postteam = async (req: Request, res: Response) => {
   const teamPlayer: number[] = req.body.playerlist;
   let allnumbers: number[] = [];
   let myid: Iplayer[] = [];
+  let checkDuplicate = (array) => new Set(array).size !==array.length
   console.log(teamPlayer.length);
   
-
-  if (teamPlayer.length > 25) {
+if(checkDuplicate(teamPlayer)){
+  res.status(400).send('error you insert the same id twice');
+  throw 'you insert the same id twice'
+}
+ else if (teamPlayer.length > 25) {
     throw 'the team can only have 25 players';
   }
 
