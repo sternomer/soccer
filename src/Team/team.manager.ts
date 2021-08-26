@@ -105,12 +105,12 @@ export async function checkIfTeamIsValidate(teamInt:number,_req:Request,res:Resp
      
       if(Gk.length==3 && Df.length==5 && Mf.length== 5 && St.length==4){
         console.log('you have a validate team');
-        res.send('you have a validate team');
+        res.send('you have a valid team');
         
       }
       else{
         console.log('you dont have a validate team');
-        res.send('you dont have a validate team')
+        res.send('you dont have a valid team')
         
       }
       
