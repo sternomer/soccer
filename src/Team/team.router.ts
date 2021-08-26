@@ -9,7 +9,7 @@ router.get('/:teamId', teamController.getoneTeam);
 router.delete('/:teamId', teamController.deleteTeam);
 router.put('/:teamId', teamController.addPlayer);
 router.get('/checkNum/:teamId', teamController.checkNumberavailable);
-// router.get('/checkPlayer/:playerlist', teamController.getNumber);
-// router.get('/getNumber/:playerId', teamController.getNumber);
+router.get('/checkvalid/:teamId', teamController.checkIfTeamIsValidateCon);
+
 
 export default router;

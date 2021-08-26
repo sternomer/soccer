@@ -30,8 +30,8 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "config.ts": "^1.0.0",
-    "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
+    "env": "0.0.2",
     "express": "^4.17.1",
     "isprime": "^0.0.2",
     "mongoose": "^5.13.7",

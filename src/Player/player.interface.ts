@@ -1,6 +1,6 @@
-export enum playerposition {
-  Gk = 'Gk',
-  Df = 'Df',
+export enum PlayerPosition {
+  GK = 'Gk',
+  DF = 'Df',
   Mf = 'Mf',
   St = 'St',
 }
@@ -13,5 +13,5 @@ export interface Iplayer {
   playerHeight: number;
   defaultShirtNumber: number;
   currentShirtNumber: number;
-  playerposition: playerposition;
+  playerposition: PlayerPosition;
 }

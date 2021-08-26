@@ -26,25 +26,11 @@ export async function getPlayersNumberInTeamRepo(teamInt: number) {
 export async function getCurrentPlayerNumberInRepo(playerId) {
   return (await PlayerSchema.findOne({ playerId })).currentShirtNumber;
 }
-//   return await PlayerSchema.aggregate([
-//     {
-//       $match: {
-//         playerId: playerId,
-//       },
-//     },
-//     {
-//       $project: {
-//         playerNumber: '$currentShirtNumber',
-//       },
-//     },
-//   ]);
-// }
+
 export async function updateNumber(playerId, newNumber: number) {
   await PlayerSchema.updateOne({ playerId }, { currentShirtNumber: newNumber });
 }
-// export async function getIdofAllPlayers(teamInt){
-// await
-// }
+
 export async function getPlayersId(teamInt: number) {
   return await teamSchema.aggregate([
     {
@@ -62,4 +48,9 @@ export async function getPlayersId(teamInt: number) {
 
 export async function getIdofAllPlayersrepo(teamInt) {
   return (await teamSchema.findOne({ teamInt })).playerlist;
+}
+export async function getPossitionOfPlayers(playerId) {
+  return (await PlayerSchema.findOne({ playerId})).playerPosition;
+
+  
 }

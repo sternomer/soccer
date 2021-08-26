@@ -39,7 +39,7 @@ export const getPlayers = async (_req: Request, res: Response) => {
 //get specific Player
 export const getonePlayer = async (req: Request, res: Response) => {
   try {
-    const specPlayer: Iplayer = await PlayerSchema.find({
+    const specPlayer: Iplayer = await PlayerSchema.findOne({
       PlayerId: req.params.PlayerId,
     });
     res.json(specPlayer);
@@ -57,6 +57,7 @@ export const deletePlayer = async (req: Request, res: Response) => {
 //update
 export const updatePlayer = async (req: Request, res: Response) => {
   console.log(req.body);
+console.log(req.body.currentShirtNumber);
 
   try {
     const updatePlayer = await PlayerSchema.updateOne(
@@ -70,6 +71,3 @@ export const updatePlayer = async (req: Request, res: Response) => {
     res.json({ message: err });
   }
 };
-// export const checkPlayerNumber = async (req:Request,res:Response)=>{
-//   id:Number = req.body.
-// }

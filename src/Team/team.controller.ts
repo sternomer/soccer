@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { ITeam } from './team.Interface';
-// import  * as  playerManager from './player.manager';
 import teamSchema from './team.model';
 import {
+  checkIfTeamIsValidate,
   getCurrentPlayerNumberInManager,
-  getIds,
+  getIdOfAllteamPlayers,
   getPlayersNumberInTeamManger,
   updatePlayerNumber,
 } from './team.manager';
@@ -15,14 +15,13 @@ export const postteam = async (req: Request, res: Response) => {
   const teamPlayer: number[] = req.body.playerlist;
   let allnumbers: number[] = [];
   let myid: Iplayer[] = [];
-  let checkDuplicate = (array) => new Set(array).size !==array.length
-  console.log(teamPlayer.length);
-  
-if(checkDuplicate(teamPlayer)){
-  res.status(400).send('error you insert the same id twice');
-  throw 'you insert the same id twice'
-}
- else if (teamPlayer.length > 25) {
+
+  let checkDuplicate = (array) => new Set(array).size !== array.length;
+
+  if (checkDuplicate(teamPlayer)) {
+    res.status(400).send('error you insert the same id twice');
+    throw 'you insert the same id twice';
+  } else if (teamPlayer.length > 25) {
     throw 'the team can only have 25 players';
   }
 
@@ -84,32 +83,24 @@ export const deleteTeam = async (req: Request, res: Response) => {
 export const addPlayer = async (req: Request, res: Response) => {
   const teamId: string = req.params.teamId;
   const teamInt: number = parseInt(teamId);
-  const myId: number[][] = await getIds(teamInt);
+  const myId: number[][] = await getIdOfAllteamPlayers(teamInt);
   const objOfplayersNumber: { playersNumber: number[] }[] = await getPlayersNumberInTeamManger(teamInt);
   const playersnumber: number[] = objOfplayersNumber[0].playersNumber;
   const playerId = req.body.playerlist;
   const objplayerNumber = await getCurrentPlayerNumberInManager(playerId);
   const playerNumber: number = objplayerNumber;
-  // let checkDuplicate =(array) =>new Set(array).size !== array.lenght;
   const currentPlayerid: number = req.body.playerlist;
   const currentPlayer: Iplayer = await PlayerSchema.findOne({ playerId: currentPlayerid });
- console.log(myId[0].includes(playerId[0]));
- console.log(myId[0]);
- console.log(playerId);
- 
- 
- 
+  
 
-
-  if (myId.length > 25) {
+  if (myId[0].length > 25) {
     throw 'the team can only have 25 players';
   }
-  for(let i = 0;i<=playerId.length;i++){
-    if(myId[0].includes(playerId[i])) {
-      res.send('the id allready exist')
+  for (let i = 0; i <= playerId.length; i++) {
+    if (myId[0].includes(playerId[i])) {
+      res.send('the id allready exist');
       throw 'the id allready exist';
-  }
-   
+    }
   }
 
   try {
@@ -141,3 +132,17 @@ export const checkNumberavailable = async (req: Request, res: Response) => {
     throw error;
   }
 };
+export const checkIfTeamIsValidateCon = async (req:Request,_res:Response)=>{
+  const teamId: string = req.params.teamId;
+  const teamInt: number = parseInt(teamId);
+  try{
+    const GetPlayerPos = await checkIfTeamIsValidate(teamInt,req,_res)
+    console.log(GetPlayerPos);
+    
+  }
+  catch (error) {
+    throw error;
+
+  }
+}
+
