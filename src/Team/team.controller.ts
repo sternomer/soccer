@@ -136,8 +136,8 @@ export const checkIfTeamIsValidateCon = async (req:Request,_res:Response)=>{
   const teamId: string = req.params.teamId;
   const teamInt: number = parseInt(teamId);
   try{
-    const GetPlayerPos = await checkIfTeamIsValidate(teamInt,req,_res)
-    console.log(GetPlayerPos);
+     await checkIfTeamIsValidate(teamInt,req,_res)
+    
     
   }
   catch (error) {

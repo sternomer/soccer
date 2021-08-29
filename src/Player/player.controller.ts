@@ -18,7 +18,7 @@ export const postPlayer = async (req: Request, res: Response) => {
       playerHeight: req.body.playerHeight,
       defaultShirtNumber: req.body.defaultShirtNumber,
       currentShirtNumber: req.body.currentShirtNumber,
-      playerPosition: req.body.playerPosition,
+      playerPosition: req.body.playerPosition,  
     });
 
     const savedPlayer = await newPlayer.save();

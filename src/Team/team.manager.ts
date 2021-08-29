@@ -65,7 +65,7 @@ export async function getIDManager(teamInt) {
   return myids;
 }
 
-export async function checkifFull(myId:number[][], playerId:number[]) {
+export async function checkifFull(myId: number[][], playerId: number[]) {
   for (let i = 0; i <= playerId.length; i++) {
     if (myId[0].includes(playerId[i])) {
       throw 'the id allready exist';
@@ -73,53 +73,35 @@ export async function checkifFull(myId:number[][], playerId:number[]) {
   }
 }
 
-export async function checkIfTeamIsValidate(teamInt:number,_req:Request,res:Response) {
- const getId = Array.from(await getPlayersId(teamInt));
+export async function checkIfTeamIsValidate(teamInt: number, _req: Request, res: Response) {
+  const getId = Array.from(await getPlayersId(teamInt));
 
- 
- const Gk:string[]=[];
- const Df:string[]=[];
- const Mf:string[]=[];
- const St:string[]=[];
-  
-    for(let i = 0;i<getId[0].playerlist.length;i++){
-      let possitions:string=await getPossitionOfPlayers(getId[0].playerlist[i]);
-      console.log(possitions);
-      
-      
+  const Gk: string[] = [];
+  const Df: string[] = [];
+  const Mf: string[] = [];
+  const St: string[] = [];
+
+  for (let i = 0; i < getId[0].playerlist.length; i++) {
+    let possitions: string = await getPossitionOfPlayers(getId[0].playerlist[i]);
     
-     if (possitions=='Gk'){
-       Gk.push(possitions)
-     }
-     else if(possitions=='Df'){
-       Df.push(possitions)
-     }
-     else if(possitions=='Mf'){
-       Mf.push(possitions)
-     }
-     else{
-       St.push(possitions)
-     }
-     console.log(Gk.length + '');
-    }
-     
-      if(Gk.length==3 && Df.length==5 && Mf.length== 5 && St.length==4){
-        console.log('you have a validate team');
-        res.send('you have a valid team');
-        
-      }
-      else{
-        console.log('you dont have a validate team');
-        res.send('you dont have a valid team')
-        
-      }
-      
-     
-      
 
+    if (possitions == 'Gk') {
+      Gk.push(possitions);
+    } else if (possitions == 'Df') {
+      Df.push(possitions);
+    } else if (possitions == 'Mf') {
+      Mf.push(possitions);
+    } else {
+      St.push(possitions);
+    }
    
-      
-   
-  
   }
 
+  if (Gk.length == 3 && Df.length == 5 && Mf.length == 5 && St.length == 4) {
+    console.log('you have a validate team');
+    res.send('you have a valid team');
+  } else {
+    console.log('you dont have a validate team');
+    res.send('you dont have a valid team');
+  }
+}
