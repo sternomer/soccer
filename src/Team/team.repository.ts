@@ -1,5 +1,15 @@
 import teamSchema from './team.model';
 import PlayerSchema from '../Player/player.model';
+import { ITeam } from './team.Interface';
+
+export function addNewTeam(req:ITeam) {
+  return new teamSchema({
+    teamName: req.body.teamName,
+    teamNation: req.body.teamNation,
+    teamId: req.body.teamId,
+    playerlist: req.body.playerlist,
+  });
+}
 
 export async function getPlayersNumberInTeamRepo(teamInt: number) {
   return await teamSchema.aggregate([
@@ -46,11 +56,21 @@ export async function getPlayersId(teamInt: number) {
   ]);
 }
 
-export async function getIdofAllPlayersrepo(teamInt) {
+export async function getIdofAllPlayersRepo(teamInt) {
   return (await teamSchema.findOne({ teamInt })).playerlist;
 }
 export async function getPossitionOfPlayers(playerId) {
   return (await PlayerSchema.findOne({ playerId})).playerPosition;
 
   
+}
+
+export async function newPlayerNumber(req: ITeam) {
+  const updateTeam = await teamSchema.updateOne(
+    {
+      teamId: req.params.teamId,
+    },
+    { $push: { playerlist: req.body.playerlist } }
+  );
+  return updateTeam;
 }

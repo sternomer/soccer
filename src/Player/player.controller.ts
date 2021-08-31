@@ -1,27 +1,15 @@
 import { Request, Response } from 'express';
 import { Iplayer } from './player.interface';
+import { createNewPlayer, gkHeightValidation } from './player.manager';
 // import  * as  playerManager from './player.manager';
 import PlayerSchema from './player.model';
 
 // post a new player//
 export const postPlayer = async (req: Request, res: Response) => {
   try {
-    if (req.body.playerPosition === 'Gk' && req.body.playerHeight < 185) {
-      throw 'gk is too short';
-    }
+    gkHeightValidation(req);
 
-    const newPlayer = new PlayerSchema({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      playerId: req.body.playerId,
-      playerNation: req.body.playerNation,
-      playerHeight: req.body.playerHeight,
-      defaultShirtNumber: req.body.defaultShirtNumber,
-      currentShirtNumber: req.body.currentShirtNumber,
-      playerPosition: req.body.playerPosition,  
-    });
-
-    const savedPlayer = await newPlayer.save();
+    const savedPlayer = await createNewPlayer(req);
     res.json(savedPlayer);
   } catch (error) {
     res.json({ message: error });
@@ -71,3 +59,4 @@ console.log(req.body.currentShirtNumber);
     res.json({ message: err });
   }
 };
+
