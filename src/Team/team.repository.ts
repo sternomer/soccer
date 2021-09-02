@@ -1,15 +1,7 @@
 import teamSchema from './team.model';
 import PlayerSchema from '../Player/player.model';
-import { ITeam } from './team.Interface';
-
-export function addNewTeam(req:ITeam) {
-  return new teamSchema({
-    teamName: req.body.teamName,
-    teamNation: req.body.teamNation,
-    teamId: req.body.teamId,
-    playerlist: req.body.playerlist,
-  });
-}
+// import { ITeam } from './team.Interface';
+import { Iplayer } from '../Player/player.interface';
 
 export async function getPlayersNumberInTeamRepo(teamInt: number) {
   return await teamSchema.aggregate([
@@ -60,17 +52,10 @@ export async function getIdofAllPlayersRepo(teamInt) {
   return (await teamSchema.findOne({ teamInt })).playerlist;
 }
 export async function getPossitionOfPlayers(playerId) {
-  return (await PlayerSchema.findOne({ playerId})).playerPosition;
-
-  
+  return (await PlayerSchema.findOne({ playerId })).playerPosition;
 }
 
-export async function newPlayerNumber(req: ITeam) {
-  const updateTeam = await teamSchema.updateOne(
-    {
-      teamId: req.params.teamId,
-    },
-    { $push: { playerlist: req.body.playerlist } }
-  );
-  return updateTeam;
+export async function findPlayerToUpdate(myid: Iplayer[], teamPlayer: number[], i: number, allnumbers: number[]) {
+  myid.push(await PlayerSchema.findOne({ playerId: teamPlayer[i] }));
+  allnumbers.push(myid[i].currentShirtNumber);
 }

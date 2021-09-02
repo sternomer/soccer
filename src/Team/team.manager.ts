@@ -1,21 +1,62 @@
 import {
+  findPlayerToUpdate,
   getCurrentPlayerNumberInRepo,
   getIdofAllPlayersRepo,
   getPlayersId,
   getPlayersNumberInTeamRepo,
   getPossitionOfPlayers,
-  newPlayerNumber,
   updateNumber,
 } from './team.repository';
 import { Request, Response } from 'express';
 import { Iplayer } from '../Player/player.interface';
 
-export async function addNewTeam(req) {
-  const newteam = addNewTeam(req);
-
-  const savedteam = await newteam.save();
-  return savedteam;
+export function checkPostValidation(checkDuplicate: (array) => boolean, teamPlayer: number[], res: Response) {
+  if (checkDuplicate(teamPlayer)) {
+    res.status(400).send('error you insert the same id twice');
+    throw 'you insert the same id twice';
+  } else if (teamPlayer.length > 25) {
+    res.send('the team can only have 25 players');
+    throw 'the team can only have 25 players';
+  }
 }
+export async function updateNumberstoPost(teamPlayer: number[], myid: Iplayer[], allnumbers: number[]) {
+  
+  for (let i: number = 0; i < teamPlayer.length; i++) {
+    await findPlayerToUpdate(myid, teamPlayer, i, allnumbers);
+  }
+  for (let i = 0; i < myid.length; i++) {
+    const element = myid[i];
+    allnumbers = [];
+    myid.forEach((p) => allnumbers.push(p.currentShirtNumber));
+
+    updatePlayerNumber(element.currentShirtNumber, allnumbers, element.playerId);
+  }
+  return allnumbers;
+}
+
+
+export function checkIfBiggerThan25(myId: number[][]) {
+  if (myId[0].length > 25) {
+    throw 'the team can only have 25 players';
+  }
+}
+
+
+export function checkIfIdExistInPut(playerId: any, myId: number[][], res: Response<any, Record<string, any>>) {
+  for (let i = 0; i <= playerId.length; i++) {
+    if (myId[0].includes(playerId[i])) {
+      res.send('the id allready exist');
+      throw 'the id allready exist';
+    }
+  }
+}
+
+export function changePlayerNumber(playersnumber: number[], playerNumber: number, currentPlayer: Iplayer, playerId: any) {
+  if (playersnumber.includes(playerNumber)) {
+    updatePlayerNumber(currentPlayer.currentShirtNumber, playersnumber, playerId);
+  }
+}
+
 
 
 
@@ -23,6 +64,7 @@ export async function getPlayersNumberInTeamManger(teamInt: number) {
   const checkNumber = Array.from(await getPlayersNumberInTeamRepo(teamInt));
   return checkNumber;
 }
+
 
 export async function getPlayersIdInTeamManger(teamInt: number) {
   const checkNumber = Array.from(await getPlayersNumberInTeamRepo(teamInt));
@@ -119,7 +161,7 @@ export async function checkIfTeamIsValidate(teamInt: number, _req: Request, res:
 export function checkIfDuplicate(
   checkDuplicate: (array: number[]) => boolean,
   teamPlayer: number[],
-  res: Response
+  res: Response,
 ): void {
   if (checkDuplicate(teamPlayer)) {
     res.status(400).send('error you insert the same id twice');
@@ -146,15 +188,3 @@ export function validateIfExist(playerId: any, myId: number[][], res: Response<a
   }
 }
 
-export async function validateAndUpdateNumber(
-  playersnumber: number[],
-  playerNumber: number,
-  currentPlayer: Iplayer,
-  playerId: any,
-  req,
-) {
-  if (playersnumber.includes(playerNumber)) {
-    updatePlayerNumber(currentPlayer.currentShirtNumber, playersnumber, playerId);
-  }
-  return await newPlayerNumber(req);
-}

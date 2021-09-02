@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Iplayer } from './player.interface';
 import { createNewPlayer, gkHeightValidation } from './player.manager';
-// import  * as  playerManager from './player.manager';
 import PlayerSchema from './player.model';
 
 // post a new player//
@@ -28,9 +27,10 @@ export const getPlayers = async (_req: Request, res: Response) => {
 export const getonePlayer = async (req: Request, res: Response) => {
   try {
     const specPlayer: Iplayer = await PlayerSchema.findOne({
-      PlayerId: req.params.PlayerId,
+      playerId: req.params.playerId,
     });
     res.json(specPlayer);
+    console.log(req.params.PlayerId);
   } catch (error) {}
 };
 //Delete
@@ -45,7 +45,7 @@ export const deletePlayer = async (req: Request, res: Response) => {
 //update
 export const updatePlayer = async (req: Request, res: Response) => {
   console.log(req.body);
-console.log(req.body.currentShirtNumber);
+  console.log(req.body.currentShirtNumber);
 
   try {
     const updatePlayer = await PlayerSchema.updateOne(
@@ -59,4 +59,3 @@ console.log(req.body.currentShirtNumber);
     res.json({ message: err });
   }
 };
-

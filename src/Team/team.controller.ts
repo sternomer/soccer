@@ -2,43 +2,38 @@ import { Request, Response } from 'express';
 import { ITeam } from './team.Interface';
 import teamSchema from './team.model';
 import {
+  changePlayerNumber,
+  checkIfBiggerThan25,
+  checkIfIdExistInPut,
   checkIfTeamIsValidate,
+  checkPostValidation,
   getCurrentPlayerNumberInManager,
   getIdOfAllteamPlayers,
   getPlayersNumberInTeamManger,
-  updatePlayerNumber,
-  checkIfDuplicate,
-  validateIfbigger,
-  validateIfExist,
-  validateAndUpdateNumber,
-  addNewTeam,
+  updateNumberstoPost
 } from './team.manager';
 import PlayerSchema from '../Player/player.model';
 import { Iplayer } from '../Player/player.interface';
 
 export const postteam = async (req: Request, res: Response) => {
-  try {
   const teamPlayer: number[] = req.body.playerlist;
   let allnumbers: number[] = [];
   let myid: Iplayer[] = [];
   let checkDuplicate = (array) => new Set(array).size !== array.length;
 
-  checkIfDuplicate(checkDuplicate, teamPlayer, res);
+  checkPostValidation(checkDuplicate, teamPlayer, res);
 
-  for (let i: number = 0; i < teamPlayer.length; i++) {
-    myid.push(await PlayerSchema.findOne({ playerId: teamPlayer[i] }));
-    allnumbers.push(myid[i].currentShirtNumber);
-    console.log(myid[i]);
-  }
-  for (let i = 0; i < myid.length; i++) {
-    const element = myid[i];
-    allnumbers = [];
-    myid.forEach((p) => allnumbers.push(p.currentShirtNumber));
+  allnumbers = await updateNumberstoPost(teamPlayer, myid, allnumbers);
 
-    updatePlayerNumber(element.currentShirtNumber, allnumbers, element.playerId);
-  }
+  const newteam = new teamSchema({
+    teamName: req.body.teamName,
+    teamNation: req.body.teamNation,
+    teamId: req.body.teamId,
+    playerlist: req.body.playerlist,
+  });
 
-  const savedteam = await addNewTeam(req);
+  try {
+    const savedteam = await newteam.save();
     res.json(savedteam);
   } catch (error) {
     res.json({ message: error });
@@ -73,25 +68,32 @@ export const deleteTeam = async (req: Request, res: Response) => {
 };
 //update
 export const addPlayer = async (req: Request, res: Response) => {
+  const teamId: string = req.params.teamId;
+  const teamInt: number = parseInt(teamId);
+  const myId: number[][] = await getIdOfAllteamPlayers(teamInt);
+  const objOfplayersNumber: { playersNumber: number[] }[] = await getPlayersNumberInTeamManger(teamInt);
+  const playersnumber: number[] = objOfplayersNumber[0].playersNumber;
+  const playerId = req.body.playerlist;
+  const objplayerNumber = await getCurrentPlayerNumberInManager(playerId);
+  const playerNumber: number = objplayerNumber;
+  const currentPlayerid: number = req.body.playerlist;
+  const currentPlayer: Iplayer = await PlayerSchema.findOne({ playerId: currentPlayerid });
+
+  checkIfBiggerThan25(myId);
+  checkIfIdExistInPut(playerId, myId, res);
+
   try {
-    const teamId: string = req.params.teamId;
-    const teamInt: number = parseInt(teamId);
-    const myId: number[][] = await getIdOfAllteamPlayers(teamInt);
-    const objOfplayersNumber: { playersNumber: number[] }[] = await getPlayersNumberInTeamManger(teamInt);
-    const playersnumber: number[] = objOfplayersNumber[0].playersNumber;
-    const playerId = req.body.playerlist;
-    const objplayerNumber = await getCurrentPlayerNumberInManager(playerId);
-    const playerNumber: number = objplayerNumber;
-    const currentPlayerid: number = req.body.playerlist;
-    const currentPlayer: Iplayer = await PlayerSchema.findOne({ playerId: currentPlayerid });
+    changePlayerNumber(playersnumber, playerNumber, currentPlayer, playerId);
+    const updateTeam = await teamSchema.updateOne(
+      {
+        teamId: req.params.teamId,
+      },
+      { $push: { playerlist: req.body.playerlist } },
+    );
 
-    validateIfbigger(myId);
-    validateIfExist(playerId, myId, res);
-
-    const updateTeam = await validateAndUpdateNumber(playersnumber, playerNumber, currentPlayer, playerId, req);
     res.json(updateTeam);
- 
   } catch (err) {
+    res.send('the player dont exist')
     res.json({ message: err });
   }
 };
@@ -117,4 +119,11 @@ export const checkIfTeamIsValidateCon = async (req: Request, _res: Response) => 
     throw error;
   }
 };
+
+
+
+
+
+
+
 
